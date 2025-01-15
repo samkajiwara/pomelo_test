@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Text Submission App</h1>
+
+  <!-- Google Login -->
+  {% if not google.authorized %}
+  <a href="{{ url_for('google.login') }}">Login with Google</a>
+  {% else %}
+  <p>Welcome! <a href="{{ url_for('logout') }}">Logout</a></p>
+  {% endif %}
+
+  <!-- Submission Form -->
+  <form method="post" action="/">
+    <input type="text" name="text" placeholder="Enter text here" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Display Submissions -->
+  <table>
+    <thead>
+      <tr>
+        <th>Text</th>
+        <th>Date & Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for submission in submissions %}
+      <tr style="background-color: {{ 'red' if submission[3] else 'white' }};">
+        <td>{{ submission[1] }}</td>
+        <td>{{ submission[2] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
