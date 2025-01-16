@@ -3,6 +3,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 import sqlite3
 import jwt
 import datetime
+from google.cloud import secretmanager
 
 
 
@@ -15,13 +16,20 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# if __name__ == "__main__":
-# app.run(ssl_context=("cert.pem", "key.pem"))
+def access_secret_version(secret_id, version_id="latest"):
+    client = secretmanager.SecretManagerServiceClient()
+    name = f"projects/pomelo-447821/secrets/{secret_id}/versions/{version_id}"
+    response = client.access_secret_version(name=name)
+    return response.payload.data.decode("UTF-8")
+
+# Fetch Client ID and Secret from GCP
+GOOGLE_CLIENT_ID = access_secret_version("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = access_secret_version("GOOGLE_CLIENT_SECRET")
 
 # Google OAuth setup
 blueprint = make_google_blueprint(
-    client_id="655817476135-eoa8m98ps3i1hv2okos6h0qgrhfokv7u.apps.googleusercontent.com",
-    client_secret="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",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
     scope=["https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/userinfo.email",
         "openid"
