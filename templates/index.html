@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pomelo Care Takehome App</title>
-  <style>
-    .tooltip {
-      font-size: 0.9em;
-      color: gray;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submissions</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .jwt-row {
+            background-color: red;
+            color: white;
+        }
+        .disabled {
+            background-color: #f2f2f2;
+            color: #aaa;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Pomelo Care Takehome App</h1>
+    <h1>Submit Text</h1>
+    <form method="POST">
+        <input type="text" name="text" placeholder="Enter text" 
+               {% if not google.authorized %}disabled{% endif %}>
+        <button type="submit" {% if not google.authorized %}disabled{% endif %}>
+            Submit
+        </button>
+    </form>
 
-  <!-- Display login/logout links -->
-  {% if google.authorized %}
-    <p>Welcome! <a href="{{ url_for('logout') }}">Logout</a></p>
-  {% else %}
-    <p>You must <a href="{{ url_for('google.login') }}">log in with Google</a> to submit text.</p>
-  {% endif %}
+    {% if google.authorized %}
+        <p>Welcome! <a href="{{ url_for('logout') }}">Logout</a></p>
+    {% else %}
+        <p><a href="{{ url_for('google.login') }}">Login with Google</a></p>
+        <p style="color: gray;">Please log in to enable the text box and submit button.</p>
+    {% endif %}
 
-  <!-- Always show the form -->
-  <form method="post" action="/">
-    <input
-      type="text"
-      name="text"
-      placeholder="Enter text here"
-      required
-      {% if not google.authorized %} disabled {% endif %}
-    >
-    <button type="submit" {% if not google.authorized %} disabled {% endif %}>
-      Submit
-    </button>
-  </form>
-
-  <!-- Tooltip explaining the disabled state -->
-
-  <!-- Display the table -->
-  <table>
-    <thead>
-      <tr>
-        <th>Text</th>
-        <th>Date & Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for submission in submissions %}
-      <tr style="background-color: {{ 'red' if submission[3] else 'white' }};">
-        <td>{{ submission[1] }}</td>
-        <td>{{ submission[2] }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h2>Submissions</h2>
+    {% if submissions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Text</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr class="{% if submission.is_jwt %}jwt-row{% endif %}">
+                    <td>{{ submission.text }}</td>
+                    <td>{{ submission.datetime }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No submissions yet.</p>
+    {% endif %}
 </body>
 </html>
