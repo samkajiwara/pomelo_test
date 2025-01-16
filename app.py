@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session
 from flask_dance.contrib.google import make_google_blueprint, google
 import sqlite3
 import jwt
@@ -20,9 +20,12 @@ app.secret_key = "supersecretkey"
 
 # Google OAuth setup
 blueprint = make_google_blueprint(
-    client_id="655817476135-uclrtmv86km2eb3r8pt7t3nuii8fachn.apps.googleusercontent.com",
-    client_secret="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",
-    scope=["profile", "email"]
+    client_id="655817476135-eoa8m98ps3i1hv2okos6h0qgrhfokv7u.apps.googleusercontent.com",
+    client_secret="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",
+    scope=["https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "openid"
+        ]
 )
 app.register_blueprint(blueprint, url_prefix="/login")
 
@@ -51,6 +54,9 @@ init_db()
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
+        if not google.authorized:
+            return redirect(url_for("google.login"))  # Redirect to Google login if not authorized
+         
         text = request.form.get("text")  # Get input text
         datetime_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -93,8 +99,16 @@ def index():
 # Logout route
 @app.route("/logout")
 def logout():
-    # Implement logout logic
-    return redirect(url_for("index"))
+    # Clear the Flask-Dance session
+    if "google_oauth_token" in session:
+        del session["google_oauth_token"]
+
+    # Redirect to Google's logout URL
+    return redirect("/")
+
+@app.route("/debug-token")
+def debug_token():
+    return jsonify(google.token)
 
 if __name__ == "__main__":
-    app.run(ssl_context=("cert.pem", "key.pem"))
+    app.run(ssl_context=("cert.pem", "key.pem"), debug=True)

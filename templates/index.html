@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web App</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Pomelo Care Takehome App</title>
+  <style>
+    .tooltip {
+      font-size: 0.9em;
+      color: gray;
+    }
+  </style>
 </head>
 <body>
-  <h1>Text Submission App</h1>
+  <h1>Pomelo Care Takehome App</h1>
 
-  <!-- Google Login -->
-  {% if not google.authorized %}
-  <a href="{{ url_for('google.login') }}">Login with Google</a>
+  <!-- Display login/logout links -->
+  {% if google.authorized %}
+    <p>Welcome! <a href="{{ url_for('logout') }}">Logout</a></p>
   {% else %}
-  <p>Welcome! <a href="{{ url_for('logout') }}">Logout</a></p>
+    <p>You must <a href="{{ url_for('google.login') }}">log in with Google</a> to submit text.</p>
   {% endif %}
 
-  <!-- Submission Form -->
+  <!-- Always show the form -->
   <form method="post" action="/">
-    <input type="text" name="text" placeholder="Enter text here" required>
-    <button type="submit">Submit</button>
+    <input
+      type="text"
+      name="text"
+      placeholder="Enter text here"
+      required
+      {% if not google.authorized %} disabled {% endif %}
+    >
+    <button type="submit" {% if not google.authorized %} disabled {% endif %}>
+      Submit
+    </button>
   </form>
 
-  <!-- Display Submissions -->
+  <!-- Tooltip explaining the disabled state -->
+
+  <!-- Display the table -->
   <table>
     <thead>
       <tr>
