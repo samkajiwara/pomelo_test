@@ -1,11 +1,12 @@
+# This test class validates PUBLIC KEYs with JWT Tokens
+
 import jwt
 
 PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9
-q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
+[INSERT HERE]
 -----END PUBLIC KEY-----"""
 
-token = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpHb3nk5K17HWP_3cYHBw7AhHale5wky6-sVA"
+token = "[INSERT HERE]"
 
 try:
     decoded_token = jwt.decode(token, PUBLIC_KEY, algorithms=["ES256"])
