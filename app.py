@@ -5,10 +5,10 @@ import datetime
 from google.cloud import secretmanager
 
 # Public Key for JWT
-PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9
-q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
------END PUBLIC KEY-----"""
+#PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
+#MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9
+#q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
+#-----END PUBLIC KEY-----"""
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -26,6 +26,7 @@ def access_secret_version(secret_id, version_id="latest"):
 # Fetch Client ID, Secret, and JWT PUBLIC KEY from GCP
 GOOGLE_CLIENT_ID = access_secret_version("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = access_secret_version("GOOGLE_CLIENT_SECRET")
+PUBLIC_KEY = access_secret_version("JWT_PUBLIC_KEY")
 # PUBLIC_KEY = access_secret_version("JWT_PUBLIC_KEY")
 
 # Google OAuth setup
@@ -113,7 +114,9 @@ def debug_secrets():
     try:
         client_id = access_secret_version("GOOGLE_CLIENT_ID")
         client_secret = access_secret_version("GOOGLE_CLIENT_SECRET")
-        return jsonify({"client_id": client_id, "client_secret": client_secret})
+        public_key = PUBLIC_KEY
+        
+        return jsonify({"client_id": client_id, "client_secret": client_secret, "PUBLIC_KEY": public_key})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
