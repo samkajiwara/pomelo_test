@@ -13,10 +13,10 @@ def save_plaintext_key_to_pem(plaintext_key, pem_file_path):
         pem_file.write(pem_formatted_key)
 
 # Example plaintext key (replace this with your actual key)
-plaintext_key = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg=="
+plaintext_key = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEMU1JFVEO9FkVr0r041GpAWzKvQi1TBYmarJj3+aNeC2aK9GT7Hct1OJGWQGbUkNWTeUr+Ui09PjBit+AMYuHgA=="
 
 # File path to save the PEM file
-pem_file_path = "/Users/samuelkajiwara/Desktop/public_key.pem"
+pem_file_path = "/Users/samuelkajiwara/Desktop/project_key.pem"
 
 # Save the plaintext key as a PEM file
 save_plaintext_key_to_pem(plaintext_key, pem_file_path)
